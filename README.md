@@ -17,7 +17,7 @@ L'objectif de ce projet est d'apprendre à utiliser [`pygame`][1] ainsi qu'une b
 
 ## Technologies
 - [`Python 3.12.3`][3]
-- [`pygame`][1]
+- [`pygame 2.6.1`][1]
 
 ## Installation
 ```
