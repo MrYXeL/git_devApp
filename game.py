@@ -1,6 +1,6 @@
 import pygame
 from player import Player
-import player
+from player import Player
 import pytmx
 import pyscroll
 
@@ -12,55 +12,61 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
 
-        #Groupe de sprites
-        self.all_sprites = pygame.sprite.Group()
-        self.projectiles = pygame.sprite.Group()
-
-        #Joueur
-        self.player = Player(640, 360)
-        self.all_sprites.add(self.player)
-
         #Data du fichier tmx
         self.tmx_data = pytmx.util_pygame.load_pygame("assets/map.tmx")
         self.map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.orthographic.BufferedRenderer(self.map_data, self.screen.get_size())
         self.map_layer.zoom = 2.5
-        #Dessine les groupes de calques
-        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=1)
 
+        #Génère le joueur
+        self.player_position = self.tmx_data.get_object_by_name("Player")
+        self.player = Player(self.player_position.x, self.player_position.y)
+
+        #Liste de collision
+        self.walls = []
+        for obj in self.tmx_data.objects:
+            if obj.name == "Collision":
+                self.walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+        #Dessine les groupes de calques
+        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=2)
+        self.group.add(self.player)
+
+    def handle_input(self):
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_z]:
+            self.player.move_up()
+        elif pressed[pygame.K_s]:
+            self.player.move_down()
+        if pressed[pygame.K_q]:
+            self.player.move_left()
+        elif pressed[pygame.K_d]:
+            self.player.move_right()
+        if not (pressed[pygame.K_z] or pressed[pygame.K_s] or pressed[pygame.K_q] or pressed[pygame.K_d]):
+            self.player.idle()
+
+    def update(self):
+        self.group.update()
+        
+        for sprite in self.group.sprites():
+            if sprite.feet.collidelist(self.walls) > -1:
+                sprite.move_back()
 
     def run(self):
+        clock = pygame.time.Clock()
         while self.running:
+            
+            self.player.save_location()
+            self.handle_input()
+            self.update()
+            self.group.center(self.player.rect.center)
+            self.group.draw(self.screen)
+            pygame.display.flip()
+
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                
-            keys = pygame.key.get_pressed()
-            projectile = None
-            if keys[pygame.K_UP]:
-                #shoot vers haut
-                projectile = self.player.shoot((self.player.position.x, self.player.position.y - 1))
-            elif keys[pygame.K_DOWN]:
-                #shoot vers bas
-                projectile = self.player.shoot((self.player.position.x, self.player.position.y + 1))
-            elif keys[pygame.K_LEFT]:
-                #shoot vers gauche
-                projectile = self.player.shoot((self.player.position.x - 1, self.player.position.y))   
-            elif keys[pygame.K_RIGHT]:
-                #shoot vers droite
-                projectile = self.player.shoot((self.player.position.x + 1, self.player.position.y))
             
-            if projectile:
-                self.all_sprites.add(projectile)
-                self.projectiles.add(projectile)
-
-            self.player.update(keys)
-            for projectile in self.projectiles:
-                projectile.update()
-
-            self.group.draw(self.screen)
-            self.all_sprites.draw(self.screen)
-            pygame.display.flip()
-            self.clock.tick(60)
-
+            clock.tick(60) #FPS
         pygame.quit()
