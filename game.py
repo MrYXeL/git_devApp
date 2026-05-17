@@ -1,6 +1,8 @@
 import pygame
 from player import Player
 import player
+import pytmx
+import pyscroll
 
 class Game:
     def __init__(self):
@@ -17,6 +19,15 @@ class Game:
         #Joueur
         self.player = Player(640, 360)
         self.all_sprites.add(self.player)
+
+        #Data du fichier tmx
+        self.tmx_data = pytmx.util_pygame.load_pygame("assets/map.tmx")
+        self.map_data = pyscroll.data.TiledMapData(self.tmx_data)
+        self.map_layer = pyscroll.orthographic.BufferedRenderer(self.map_data, self.screen.get_size())
+        self.map_layer.zoom = 2.5
+        #Dessine les groupes de calques
+        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=1)
+
 
     def run(self):
         while self.running:
@@ -47,7 +58,7 @@ class Game:
             for projectile in self.projectiles:
                 projectile.update()
 
-            self.screen.fill((0, 0, 0))
+            self.group.draw(self.screen)
             self.all_sprites.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(60)
