@@ -20,6 +20,10 @@ class AnimateSprite(pygame.sprite.Sprite):
     def animate(self):
         frames = self.images[self.current_animation]
         self.animation_frame += 1
+        if self.current_animation.startswith("slash"):
+            self.animation_speed = 2
+        else:
+            self.animation_speed = 8
         if self.animation_frame < self.animation_speed:
             return
 
@@ -33,10 +37,14 @@ class AnimateSprite(pygame.sprite.Sprite):
 def load_animation_images(sprite_name, animations, direction):
     images = []
     path = f"assets/{sprite_name}/{animations}/"
-
-    for num in range(0, 8):
-        image_path = path + f"{sprite_name}_{animations}_{direction}_{num}.png"
-        images.append(pygame.image.load(image_path))
+    if path == f"assets/player/slash/":
+        for num in range(0, 5):
+            image_path = path + f"{sprite_name}_{animations}_{direction}_{num}.png"
+            images.append(pygame.image.load(image_path))
+    else:
+        for num in range(0, 8):
+            image_path = path + f"{sprite_name}_{animations}_{direction}_{num}.png"
+            images.append(pygame.image.load(image_path))
     return images
 
 animation = {
@@ -48,6 +56,10 @@ animation = {
         "run_down": load_animation_images("player", "run", "down"),
         "run_up": load_animation_images("player", "run", "up"),
         "run_right": load_animation_images("player", "run", "right"),
-        "run_left": load_animation_images("player", "run", "left")
+        "run_left": load_animation_images("player", "run", "left"),
+        "slash_down": load_animation_images("player", "slash", "down"),
+        "slash_up": load_animation_images("player", "slash", "up"),
+        "slash_right": load_animation_images("player", "slash", "right"),
+        "slash_left": load_animation_images("player", "slash", "left")
     }
 }
