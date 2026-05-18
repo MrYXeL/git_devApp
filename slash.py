@@ -3,10 +3,10 @@ import animation
 
 class Slash(animation.AnimateSprite):
     OFFSET = {
-        "left": (-10, 0),
-        "right": (10, 0),
-        "up": (0, -10),
-        "down": (0, 10)
+        "left": (-15, 0),
+        "right": (15, 0),
+        "up": (0, -15),
+        "down": (0, 15)
     }
 
     def __init__(self, player):
@@ -21,6 +21,7 @@ class Slash(animation.AnimateSprite):
         # Force l'affichage de la première frame
         frames = self.images[self.current_animation]
         self.image = frames[self.current_image]
+        self.active = False
 
     def update(self):
         self.position = self.player.position.copy()
@@ -32,5 +33,7 @@ class Slash(animation.AnimateSprite):
         frames = self.images[self.current_animation]
         old_index = self.current_image
         self.animate()
+        self.active = True
         if old_index == len(frames) - 1 and self.current_image == 0:
             self.kill()
+            self.active = False

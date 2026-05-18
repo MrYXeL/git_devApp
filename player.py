@@ -5,15 +5,20 @@ import slash
 class Player(animation.AnimateSprite):
     def __init__(self, x, y):
         super().__init__("player")
+        self.position = [x, y]
         self.image.set_colorkey([0, 0, 0])
         self.rect = self.image.get_rect()
-        self.position = [x, y]
+        self.rect.size = (16, 16)
+        self.rect.topleft = self.position
         self.speed = 2
         self.direction = "down"
         self.feet = pygame.Rect(0, 0, self.rect.width * 0.5, 12)
         self.old_position = self.position.copy()
         self.last_attack_time = 0
         self.attack_cooldown = 500  # en millisecondes
+        self.life = 5
+        self.hit_cooldown = 1000  # en millisecondes
+        self.last_hit_time = 0
 
     def save_location(self):
         self.old_position = self.position.copy()
@@ -41,6 +46,13 @@ class Player(animation.AnimateSprite):
     def idle(self):
         self.set_animation(f"idle_{self.direction}")
 
+    def get_hit(self):
+        if pygame.time.get_ticks() - self.last_hit_time >= self.hit_cooldown:
+            self.last_hit_time = pygame.time.get_ticks()
+            self.life -= 1
+            if self.life <= 0:
+                print("Player is dead!")
+
     def slash(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_attack_time >= self.attack_cooldown:
@@ -57,8 +69,3 @@ class Player(animation.AnimateSprite):
         self.position = self.old_position.copy()
         self.rect.topleft = self.position
         self.feet.midbottom = self.rect.midbottom
-
-    def get_image(self, x, y):
-        image = pygame.Surface([16,16])
-        image.blit(self.sprite_sheet, (0, 0), (x, y, 16, 16))
-        return image

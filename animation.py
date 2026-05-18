@@ -61,5 +61,15 @@ animation = {
         "slash_up": load_animation_images("player", "slash", "up"),
         "slash_right": load_animation_images("player", "slash", "right"),
         "slash_left": load_animation_images("player", "slash", "left")
+    },
+    "ennemi": {
+        "idle_down": load_animation_images("ennemi", "idle", "down"),
+        "idle_up": load_animation_images("ennemi", "idle", "up"),
+        "idle_right": load_animation_images("ennemi", "idle", "right"),
+        "idle_left": load_animation_images("ennemi", "idle", "left"),
+        "run_down": load_animation_images("ennemi", "run", "down"),
+        "run_up": load_animation_images("ennemi", "run", "up"),
+        "run_right": load_animation_images("ennemi", "run", "right"),
+        "run_left": load_animation_images("ennemi", "run", "left")
     }
 }
