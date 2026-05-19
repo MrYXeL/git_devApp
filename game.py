@@ -23,6 +23,14 @@ class Game:
         self.player = Player(self.player_position.x, self.player_position.y)
         self.slash = None
 
+        pygame.mixer.init()
+        self.sound_slash = pygame.mixer.Sound("assets/sounds/slash.mp3")
+        self.sound_slash.set_volume(0.05)
+        self.sound_zombie_hurt = pygame.mixer.Sound("assets/sounds/zombie_hurt.mp3")
+        self.sound_zombie_hurt.set_volume(0.05)
+        self.cooldown_time_hurt = 1000
+        self.current_cooldown_time_hurt = 0
+
 
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=1)
 
@@ -51,6 +59,7 @@ class Game:
         if pressed[pygame.K_SPACE]:
             slash_sprite = self.player.slash()
             if slash_sprite is not None:
+                self.sound_slash.play()
                 self.group.add(slash_sprite)
                 self.slash = slash_sprite
 
@@ -62,6 +71,9 @@ class Game:
                 sprite.move_back()
             if isinstance(sprite, Ennemi) and self.slash and self.slash.active:
                 if sprite.rect.colliderect(self.slash.rect):
+                    if pygame.time.get_ticks() - self.current_cooldown_time_hurt >= self.cooldown_time_hurt:
+                        self.current_cooldown_time_hurt = pygame.time.get_ticks()
+                        self.sound_zombie_hurt.play()
                     sprite.get_hit()
 
     def death_screen(self):

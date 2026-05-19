@@ -19,6 +19,8 @@ class Player(animation.AnimateSprite):
         self.life = 5
         self.hit_cooldown = 1000  # en millisecondes
         self.last_hit_time = 0
+        self.sound_player_hurt = pygame.mixer.Sound("assets/sounds/player_hurt.mp3")
+        self.sound_player_hurt.set_volume(0.05)
 
     def save_location(self):
         self.old_position = self.position.copy()
@@ -50,6 +52,7 @@ class Player(animation.AnimateSprite):
         if pygame.time.get_ticks() - self.last_hit_time >= self.hit_cooldown:
             self.last_hit_time = pygame.time.get_ticks()
             self.life -= 1
+            self.sound_player_hurt.play()
             if self.life <= 0:
                 print("Player is dead!")
 
