@@ -1,19 +1,18 @@
-# NomDuJeu
-2D Simple Shooter
+# Knight Dungeon
+2D dungeon
 
 ## Description
-Jeu Shooter en 2D, le joueur doit avancer de salle en salle, il peut obtenir un objet afin augmenter certaines stats comme la vitesse de tir ou de déplacement par exemple.
-Son but, arriver à trouver le boss et le terrasser.
+Jeu en 2D, le joueur doit avancer de salle en salle.
+Son but, terrasser les ennemis.
 
 L'objectif de ce projet est d'apprendre à utiliser [`pygame`][1] ainsi qu'une bonne utilisation de [`git`][2]
 
 *Projet universitaire en cours de développement*
 
 ## Fonctionnalités
-- Déplacement du joueur à l'aide de ZQSD, tir à l'aide des flèches directionnelle
+- Déplacement du joueur à l'aide de ZQSD, attaque avec la barre espace
 - Système de PV visible en haut à gauche
-- Item améliorant des stats
-- 
+- Compteur d'ennemis restant
 
 ## Technologies
 - [`Python 3.12.3`][3]
